@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     const Model = sequelize.define('User', {
         oauth_provider: { 
             type: DataTypes.ENUM('app', 'facebook'),
-            allowNull: false,
+            allowNull: true,
             defaultValue: 'app'
         },
         oauth_uid: {
@@ -50,25 +50,25 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: true
         },
-        encript_pw: {
+        password: {
             type: DataTypes.STRING,
             allowNull: false,
         }
-    })
+    });
 
 
     Model.beforeSave(async (user, options) => {
         let err;
 
-        if (user.changed('encript_pw')) {
+        if (user.changed('password')) {
             let salt, hash;
             [err, salt] = await to(bcrypt.genSalt(10));
             if (err) TE(err.message, true);
 
-            [err, hash] = await to(bcrypt.hash(user.encript_pw, salt));
+            [err, hash] = await to(bcrypt.hash(user.password, salt));
             if (err) TE(err.message, true);
 
-            user.encript_pw = hash;
+            user.password = hash;
         }
     });
 
@@ -76,9 +76,9 @@ module.exports = (sequelize, DataTypes) => {
     // compare form password with database hash password
     Model.prototype.comparePassword = async function (pw) {
         let err, pass
-        if (!this.encript_pw) TE('Ingresa tu contraseña');
+        if (!this.password) TE('Ingresa tu contraseña');
 
-        [err, pass] = await to(bcrypt_p.compare(pw, this.encript_pw));
+        [err, pass] = await to(bcrypt_p.compare(pw, this.password));
         if (err) TE(err);
 
         if (!pass) TE('Ups! Contraseña incorrecta. Vuelve a intentarlo');
@@ -100,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
             name: this.name,
             email: this.email,
             birthday: this.birthday,
-            phone: this.phone,
+            phone: this.phone
         };
     };
 
