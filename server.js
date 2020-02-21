@@ -7,11 +7,11 @@ const pe            = require('parse-error');
 const cors          = require('cors');
 
 
-const CONFIG  = require('./config/config');
+const CONFIG        = require('./config/config');
 
-const routers = require('./routes/routes');
-const app     = express();
-const port    = CONFIG.port;
+const routers       = require('./routes/routes');
+const app           = express();
+const port          = CONFIG.port;
 
 
 // logger morgan
@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse requests of content-type: application/json
 app.use(bodyParser.json());
+
 
 
 // passport
@@ -41,8 +42,19 @@ if (CONFIG.app === 'dev') {
     models.sequelize.sync();
 }
 
+
+// enable cors
+const corsOption = {
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    exposedHeaders: ['x-auth-token']
+  };
+
 // cors
-app.use(cors());
+app.use(cors(corsOption));
+
+
 
 app.use('/v1', routers);
 
@@ -50,6 +62,9 @@ app.use('/', (req, res) => {
     res.statusCode = 200;
     res.json({ status: 'success', message: 'Pending API', data: {} });
 });
+
+
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -66,6 +81,7 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.render('error');
 });
+
 
 
 

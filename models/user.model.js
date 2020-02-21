@@ -104,6 +104,7 @@ module.exports = (sequelize, DataTypes) => {
         };
     };
 
+
     
     return Model;
 }

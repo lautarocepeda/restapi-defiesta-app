@@ -1,8 +1,8 @@
-const { to, ReE, ReS }              = require('../services/util.service');
+const { to, ReE, ReS } = require('../services/util.service');
 // express validator
-const { check, validationResult }   = require('express-validator');
-const { User }                      = require('../models');
-const authService                   = require('../services/auth.service');
+const { check, validationResult } = require('express-validator');
+
+const { authService } = require('../services/auth.service');
 
 
 
@@ -13,7 +13,7 @@ const validate = (method) => {
             return [
                 check('name', 'Nombre es requerido.').trim().isLength({ min: 1, max: 15 }).escape(),
                 check('email', 'Por favor, ingresa un correo válido.').trim().isEmail().normalizeEmail(),
-                check('password', 'Por favor, ingresa una contraseña.').isLength({ min: 7, max: 30})
+                check('password', 'Por favor, ingresa una contraseña.').isLength({ min: 7, max: 30 })
                 //check('phone', 'Please enter an valid phone number.').trim().isInt()
             ];
         }
@@ -25,15 +25,15 @@ module.exports.validate = validate;
 
 
 const create = async (req, res) => {
-    
+
     // user data
     const body = req.body;
-    
+
     // find validation errors in this request
     const errors = validationResult(req);
-    
+
     if (!errors.isEmpty()) {
-        return ReE(res, errors.array()); 
+        return ReE(res, errors.array());
     } else {
         let err, user;
 
@@ -48,6 +48,7 @@ const create = async (req, res) => {
 }
 
 module.exports.create = create;
+
 
 
 

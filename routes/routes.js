@@ -6,7 +6,9 @@ const UserController    = require('../controllers/user.controller');
 const passport      	= require('passport');
 
 
-require('./../middleware/passport')(passport)
+
+require('./../middleware/passport')(passport);
+
 
 
 // default page
@@ -19,6 +21,17 @@ router.get('/', (req, res, next) => {
 
 // create user with normal account
 router.post(    '/users',           UserController.validate('createUser'),              UserController.create);
+
+
+
+
+// create user with facebook
+router.post('/auth/facebook/token',  passport.authenticate('facebook-token', {session:false}),  (req, res) => {
+    res.send(req.user);
+});
+
+
+
 
 
 // Retrieve a user

@@ -24,6 +24,11 @@ CONFIG.jwt_encryption       =  process.env.JWT_ENCRYPTION   || '4Jkx89mKjeQl2xXM
 CONFIG.jwt_expiration       =  process.env.JWT_EXPIRATION   || '10000';
 
 
+// facebook credentials
+CONFIG.facebook_client      = process.env.FACEBOOK_CLIENT_ID
+CONFIG.facebook_secret      = process.env.FACEBOOK_CLIENT_SECRET
+
+
 
 
 module.exports = CONFIG;
