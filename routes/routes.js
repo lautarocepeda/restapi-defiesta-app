@@ -20,31 +20,29 @@ router.get('/', (req, res, next) => {
 
 
 // create user with normal account
-router.post(    '/users',           UserController.validate('createUser'),              UserController.create);
+router.post(    '/users',                   UserController.validate('createUser'),                      UserController.create);
 
 
 
 
-// create user with facebook
-router.post('/auth/facebook/token',  passport.authenticate('facebook-token', {session:false}),  (req, res) => {
-    res.send(req.user);
-});
+// create, login user with facebook
+router.post(    '/auth/facebook/token',     passport.authenticate('facebook-token', {session:false}),   UserController.oauthGet);
 
 
 
 
 
 // Retrieve a user
-router.get(     '/users',           passport.authenticate('jwt', {session:false}),      UserController.get);
+router.get(     '/users',                   passport.authenticate('jwt', {session:false}),              UserController.get);
 
 // update user
-router.put(     '/users',           passport.authenticate('jwt', {session:false}),      UserController.update);
+router.put(     '/users',                   passport.authenticate('jwt', {session:false}),              UserController.update);
 
 // delete user
-router.delete(  '/users',           passport.authenticate('jwt', {session:false}),      UserController.remove);
+router.delete(  '/users',                   passport.authenticate('jwt', {session:false}),              UserController.remove);
 
 // login user
-router.post(    '/users/login',     UserController.login);
+router.post(    '/users/login',             UserController.login);
 
 
 

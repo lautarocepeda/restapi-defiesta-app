@@ -1,8 +1,7 @@
-const { to, ReE, ReS } = require('../services/util.service');
+const { to, ReE, ReS }                  = require('../services/util.service');
 // express validator
-const { check, validationResult } = require('express-validator');
-
-const { authService } = require('../services/auth.service');
+const { check, validationResult }       = require('express-validator');
+const authService                       = require('../services/auth.service');
 
 
 
@@ -60,6 +59,18 @@ const get = async (req, res) => {
 }
 
 module.exports.get = get;
+
+
+
+
+const oauthGet = async (req, res) => {
+    res.set('Content-type', 'application/json');
+    const user = req.user;
+
+    return ReS(res, { user: user.toWeb(), token: user.getJWT() }, 201);
+}
+
+module.exports.oauthGet = oauthGet;
 
 
 

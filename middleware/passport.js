@@ -1,11 +1,12 @@
-const { ExtractJwt } = require('passport-jwt');
-const { User } = require('../models');
-const CONFIG = require('../config/config');
-const { to } = require('../services/util.service');
-const { authService } = require('../services/auth.service');
+const { ExtractJwt }            = require('passport-jwt');
+const { User }                  = require('../models');
+const CONFIG                    = require('../config/config');
+const { to }                    = require('../services/util.service');
+const authService               = require('../services/auth.service');
 
-const JWTStrategy = require('passport-jwt').Strategy;
-const FacebookTokenStrategy = require('passport-facebook-token');
+const JWTStrategy               = require('passport-jwt').Strategy;
+const FacebookTokenStrategy     = require('passport-facebook-token');
+
 
 module.exports = (passport) => {
     const opts = {};
@@ -36,7 +37,12 @@ module.exports = (passport) => {
         //profileFields: ['id', 'displayName','email', 'photos', 'birthday'],
     }, 
     async (accessToken, refreshToken, profile, done) => {
-        
+
+
+        //TODO verificar el token que sea correcto. Error handler desde server.js o desde aca mismo.
+
+
+
         let err, user;
 
         [err, user] = await to(User.findOne({
@@ -45,35 +51,23 @@ module.exports = (passport) => {
             }
         }));
 
-        // user found
-        if (user) return done(null, { user: user.toWeb(), token: user.getJWT() });
-
-
-        const userObj = {
-            oauth_provider: 'facebook',
-            oauth_uid: profile._json.id,
-            name: profile._json.name,
-            email: profile._json.email || profile.emails[0].value,
-            birthday: profile._json.birthday,
-            password: '@@@@@@@---------@@@@@@@'
+        // user not found
+        if (!user) {
+            const newUserObj = {
+                oauth_provider: 'facebook',
+                oauth_uid: profile._json.id,
+                name: profile._json.name,
+                email: profile._json.email || profile.emails[0].value,
+                birthday: profile._json.birthday,
+                password: '@@@@@@@---------@@@@@@@'
+            };
+            
+            [err, user] = await to(User.create(newUserObj));
         }
-        
-        // user not found, lets create a new user
-        const newUser = await to(User.create(userObj));
 
-        //TODO verificar que se cree el obj asi poder enviarlo como la linea 49.
-        return done(null, { user: newUser.toWeb(), token: newUser.getJWT() });
+        if (err) return done(err, false);
+        if (user) return done(null, user);
+        
     }));
 
-
-
-    passport.serializeUser((user, done) => {
-        done(null, user);
-    });
-
-
-
-    passport.deserializeUser((obj, done) => {
-        done(null, obj);
-    });
 }
