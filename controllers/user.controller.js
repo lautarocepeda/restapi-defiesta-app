@@ -67,7 +67,7 @@ const oauthGet = async (req, res) => {
     res.set('Content-type', 'application/json');
     const user = req.user;
 
-    return ReS(res, { user: user.toWeb(), token: user.getJWT() }, 201);
+    return ReS(res, { ...user.toWeb(), token: user.getJWT() }, 201);
 }
 
 module.exports.oauthGet = oauthGet;

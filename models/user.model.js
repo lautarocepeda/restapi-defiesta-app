@@ -96,6 +96,7 @@ module.exports = (sequelize, DataTypes) => {
     Model.prototype.toWeb = function () {
         return {
             id: this.id,
+            uid: this.oauth_uid,
             provider: this.oauth_provider,
             name: this.name,
             email: this.email,

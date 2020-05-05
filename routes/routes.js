@@ -26,7 +26,7 @@ router.post(    '/users',                   UserController.validate('createUser'
 
 
 // create, login user with facebook
-router.post(    '/auth/facebook/token',     passport.authenticate('facebook-token', {session:false}),   UserController.oauthGet);
+router.post(    '/auth/facebook',     passport.authenticate('facebook-token', {session:false}),   UserController.oauthGet);
 
 
 
